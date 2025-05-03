@@ -1,79 +1,104 @@
-=== MP3 Listing Plugin ===
-Contributors: wikiwyrhead
-Tags: mp3, audio, music, player, download
+=== TRDS MP3 Listing ===
+Contributors: arnelbg
+Tags: mp3, audio, player, download, social share
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.2.1
+Tested up to: 6.5
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin for listing and playing MP3 files with download and share functionality.
+A WordPress plugin for managing and displaying MP3 files with social sharing and download capabilities.
 
 == Description ==
 
-MP3 Listing Plugin provides an easy way to display and manage MP3 files on your WordPress site. Features include:
+TRDS MP3 Listing is a powerful WordPress plugin that allows you to upload, manage, and display MP3 files on your website. It includes features like social media sharing, download tracking, and customizable colors.
 
+= Features =
+
+* Upload and manage MP3 files
+* Social media sharing (Facebook, Twitter, LinkedIn, Reddit, WhatsApp, Email)
+* Download tracking
+* Customizable colors for buttons and titles
+* Playlist management
 * Responsive audio player
-* Download functionality
-* Share buttons for social media
-* Play count tracking
-* Load more functionality
-* Customizable colors for player interface
+* Efficient search functionality
+* Load more pagination
 
-== Installation ==
+= Installation =
 
-1. Upload the plugin files to `/wp-content/plugins/mp3-listing-plugin`
+1. Upload the plugin files to the `/wp-content/plugins/mp3-listing-plugin` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use the shortcode [mp3_listing] to display the MP3 list on any page or post
+3. Configure settings under MP3 Files > Settings
 
-== Frequently Asked Questions ==
+= Usage =
 
-= How do I display the MP3 list? =
-Use the shortcode [mp3_listing] in any post or page.
-
-= Can I customize the appearance? =
-Yes, you can customize colors for:
-* Download button
-* Share button
-* MP3 title
-* Audio player
+Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post.
 
 == Changelog ==
 
+= 1.2.5 =
+* Improved search functionality efficiency
+* Fixed playlist filtering during search
+* Enhanced social media sharing dropdown behavior
+* Optimized load more functionality
+
 = 1.2.4 =
-* Enhanced search performance and mobile responsiveness
-* Improved accessibility and keyboard navigation
-* Optimized CSS loading and error handling
-* Fixed various UI and layout issues
+* Fixed social media sharing dropdown issues
+* Improved playlist management
+* Enhanced security features
 
 = 1.2.3 =
-This version introduces real-time search functionality with improved user experience and performance optimizations. Update for enhanced search capabilities and better mobile support.
+* Added playlist support
+* Improved UI/UX
+* Fixed minor bugs
 
 = 1.2.2 =
-This version fixes load more functionality for all users and improves security. Update for better performance and reliability.
+* Added support for both logged-in and logged-out users
+* Improved AJAX handling
+* Enhanced error handling
 
 = 1.2.1 =
-This version improves the visual consistency of the plugin with enhanced color schemes and optimized styling. Update for a better user experience.
+* Added color customization options
+* Improved mobile responsiveness
+* Fixed download tracking
 
 = 1.2.0 =
-This version adds customizable color settings and improves the overall user interface. Update to get access to the new styling options.
+* Added social media sharing
+* Improved audio player
+* Enhanced security features
 
 = 1.1.0 =
-This version adds social media sharing and play count tracking. Update to enable these new features.
-
-= 1.0.0 =
-Initial release with basic MP3 file management and playback functionality.
+* Initial release with basic functionality
+* MP3 upload and management
+* Download tracking
+* Basic audio player
 
 == Upgrade Notice ==
 
-= 1.2.1 =
-This version improves the visual consistency of the plugin with enhanced color schemes and optimized styling. Update for a better user experience.
+= 1.2.5 =
+This update improves search functionality and fixes playlist filtering issues.
 
-= 1.2.0 =
-This version adds customizable color settings and improves the overall user interface. Update to get access to the new styling options.
+== Frequently Asked Questions ==
+
+= How do I add MP3 files? =
+
+Go to MP3 Files > Add New in your WordPress admin area. Upload your MP3 file and add a title.
+
+= How do I display the MP3 listing? =
+
+Use the shortcode `[mp3_listing]` on any page or post where you want to display the MP3 listing.
+
+= Can I customize the colors? =
+
+Yes, go to MP3 Files > Settings to customize the colors of buttons, titles, and the audio player.
 
 == Screenshots ==
 
-1. MP3 listing with audio player
-2. Settings page with color customization
-3. Share functionality in action
+1. MP3 Listing Frontend Display
+2. MP3 Upload Interface
+3. Settings Page
+4. Playlist Management
+
+== Support ==
+
+For support, please visit the [GitHub repository](https://github.com/wikiwyrhead/TRDS-MP3-Listing/).

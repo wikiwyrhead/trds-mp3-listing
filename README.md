@@ -1,205 +1,75 @@
-# MP3 Listing Plugin
+# TRDS MP3 Listing Plugin
 
-A WordPress plugin for listing and playing MP3 files with download and share functionality. This plugin provides an elegant way to showcase your audio content with a modern, customizable interface.
+A WordPress plugin for managing and displaying MP3 files with social sharing and download capabilities.
 
-## Features
+## Version 1.2.5
 
-- Responsive HTML5 audio player
-- Direct download functionality with click tracking
-- Social media sharing (Facebook, Twitter, WhatsApp)
-- Play count tracking
-- Load more functionality for paginated display
-- Real-time search functionality with dynamic playlist title
-- Customizable color scheme
-- Mobile-friendly interface
-
-## Installation
-
-1. Download the plugin zip file
-2. Upload to your WordPress site through the Plugins menu
-3. Activate the plugin
-4. Go to "MP3 Files" in your WordPress admin menu
-5. Start uploading MP3 files and customize the appearance
-
-## Usage
-
-### Basic Shortcode
-
-Add the MP3 listing to any page or post using the shortcode:
-
-```
-[mp3_listing]
-```
-
-For a specific playlist:
-```
-[mp3_listing playlist="your-playlist-name"]
-```
-
-### Customization
-
-Navigate to MP3 Files > Settings to customize:
-
-- Download button color
-- Share button color
-- MP3 title color
-- Audio player color
-
-## Changelog
-
-### Version 1.2.4 (2024-05-03)
-
-#### Added
-- Enhanced search performance with optimized query handling
-- Improved mobile responsiveness for audio player controls
-- Added support for keyboard navigation in search results
-
-#### Improved
-- Optimized CSS loading for better performance
-- Enhanced error handling for file downloads
-- Improved accessibility with better ARIA labels
-- Streamlined AJAX request handling
-
-#### Fixed
-- Fixed occasional search result highlighting issues
-- Resolved mobile layout inconsistencies
-- Fixed audio player controls visibility in dark mode
-- Addressed minor CSS specificity conflicts
-
-### Version 1.2.3 (2024-04-02)
-
-#### Added
-- Real-time search functionality across all items
-- Dynamic search placeholder showing current playlist title
-- Automatic loading of matching items during search
-- Search term highlighting for better user experience
-
-#### Improved
-- Search now works across all items without requiring manual loading
-- Enhanced user experience with instant search results
-- Better state management for load more functionality during search
-
-### Version 1.2.2 (2024-04-01)
-
-#### Fixed
-- Load more functionality now works correctly for both logged-in and logged-out users
-- Fixed CSS Google Fonts import rule positioning
-- Improved AJAX parameters handling for better security and functionality
-
-### Version 1.2.1 (2024-03-31)
-
-#### Changed
-- Updated audio player color scheme to match the overall design
-- Refined button colors for better visual consistency
-- Improved audio player controls visibility
-- Optimized CSS structure by removing redundant files
-- Consolidated styling into a single, maintainable file
-
-### Version 1.2.0 (2025-02-23)
-
-#### Added
-
-- Color customization settings for UI elements
-- Improved settings page with color pickers
-- Enhanced mobile responsiveness
-- Better error handling for file operations
-
-#### Changed
-
-- Simplified color settings interface
-- Improved button styling consistency
-- Enhanced audio player appearance
-- Updated social sharing implementation
-
-#### Fixed
-
-- Color picker functionality
-- Mobile layout issues
-- Share button positioning
-- Audio player controls styling
-
-### Version 1.1.0 (2025-02-15)
-
-#### Added
-
-- Social media sharing functionality
-- Play count tracking system
-- Load more feature for pagination
-- Mobile-responsive design improvements
-
-### Version 1.0.0 (2025-02-01)
-
-#### Added
-
-- Basic MP3 file management system
-- Custom post type for MP3 files
-- Frontend display with [mp3_listing] shortcode
-- HTML5 audio player integration
-- Basic download functionality
-- Simple admin interface for MP3 uploads
-- Basic styling for the frontend display
-- File size display and format validation
-- Security measures for file downloads
-- Basic error handling
-
-#### Core Features
-
-- MP3 file upload and management
-- Audio playback functionality
-- Download tracking system
-- Basic admin settings page
-- Frontend shortcode integration
-- File type validation
-- Secure file handling
-
-#### Technical Implementation
-
-- Custom post type registration
-- File upload handling
-- Download functionality with security checks
-- Basic CSS styling
-- WordPress admin integration
-- Error logging system
-- File size calculations
-- MIME type validation
-
-## Improvements from Original Plugin
-
-### User Interface
-
-- Added modern color picker interface
-- Customizable color options for better branding
-- Enhanced mobile responsiveness
-- Added load more functionality
+### Latest Updates
+- Improved search functionality efficiency
+- Fixed playlist filtering during search
+- Enhanced social media sharing dropdown behavior
+- Optimized load more functionality
 
 ### Features
+- Upload and manage MP3 files
+- Social media sharing (Facebook, Twitter, LinkedIn, Reddit, WhatsApp, Email)
+- Download tracking
+- Customizable colors for buttons and titles
+- Playlist management
+- Responsive audio player
+- Efficient search functionality
+- Load more pagination
 
-- Added play count tracking
-- Enhanced social sharing capabilities
-- Improved audio player styling
-- Better performance with optimized code
+### Installation
+1. Download the plugin
+2. Upload to your WordPress plugins directory
+3. Activate the plugin
+4. Configure settings under MP3 Files > Settings
 
-### Code Quality
+### Usage
+Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post.
 
-- Improved security with proper nonce verification
-- Better code organization
-- Optimized asset loading
-- Fixed various bugs and issues
+### Changelog
 
-## Requirements
+#### 1.2.5
+- Improved search functionality efficiency
+- Fixed playlist filtering during search
+- Enhanced social media sharing dropdown behavior
+- Optimized load more functionality
 
-- WordPress 5.0 or higher
-- PHP 7.2 or higher
-- Modern web browser with HTML5 audio support
+#### 1.2.4
+- Fixed social media sharing dropdown issues
+- Improved playlist management
+- Enhanced security features
 
-## Support
+#### 1.2.3
+- Added playlist support
+- Improved UI/UX
+- Fixed minor bugs
 
-For support, feature requests, or bug reports, please use the GitHub issues page.
+#### 1.2.2
+- Added support for both logged-in and logged-out users
+- Improved AJAX handling
+- Enhanced error handling
 
-## License
+#### 1.2.1
+- Added color customization options
+- Improved mobile responsiveness
+- Fixed download tracking
 
-This plugin is licensed under the GPL v2 or later.
+#### 1.2.0
+- Added social media sharing
+- Improved audio player
+- Enhanced security features
 
-## Credits
+#### 1.1.0
+- Initial release with basic functionality
+- MP3 upload and management
+- Download tracking
+- Basic audio player
 
-Originally forked from TRDS MP3 Listing by Arnel Go. Enhanced and maintained by WikiWyrhead.
+### Support
+For support, please open an issue on the GitHub repository.
+
+### License
+GPLv2 or later

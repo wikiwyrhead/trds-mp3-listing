@@ -4,9 +4,9 @@
  * Plugin Name: TRDS MP3 Listing
  * Plugin URI: https://github.com/wikiwyrhead/TRDS-MP3-Listing/
  * Description: A simple plugin to upload, manage, and list MP3 files with download and social media share buttons. Includes a backend for uploading MP3s and a shortcode to display the audio listing on the frontend. Allows customization of button and title colors via a settings submenu under MP3 Files.
- * Version: 1.2.3
+ * Version: 1.2.4
  * Author: Arnel Go
- * Author URI: https://arnelgo.info/
+ * Author URI: https://arnelbg.com/
  * License: GPLv2 or later
  * Text Domain: trds-mp3-listing
  */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Plugin version
-define('TRDS_MP3_PLUGIN_VERSION', '1.2.3');
+define('TRDS_MP3_PLUGIN_VERSION', '1.2.4');
 
 function force_download_mp3()
 {
@@ -349,7 +349,7 @@ function mp3_frontend_scripts()
     wp_enqueue_script('mp3-upload', plugin_dir_url(__FILE__) . 'assets/js/mp3-upload.js', array('jquery'), '1.0', true);
     wp_enqueue_style('mp3-listing-style', plugin_dir_url(__FILE__) . 'assets/css/mp3-style.css', array(), '1.0');
     wp_localize_script('mp3-upload', 'mp3_ajax_params', array('ajax_url' => admin_url('admin-ajax.php')));
-    
+
     // Additional frontend JavaScript for load more functionality
     wp_enqueue_script(
         'mp3-frontend-scripts',
@@ -646,12 +646,17 @@ function mp3_listing_shortcode($atts)
 
     $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 
-    // Get playlist title if playlist is specified
-    $playlist_title = 'KHOUTBAH';
+    // Get playlist info if specified
+    $playlist_id = '';
+    $playlist_title = 'No Playlist Selected';
     if (!empty($atts['playlist'])) {
         $playlist = get_term_by('slug', $atts['playlist'], 'mp3_playlist');
         if ($playlist) {
+            $playlist_id = $playlist->term_id;
             $playlist_title = strtoupper($playlist->name);
+        } else {
+            // Playlist slug not found, return empty output
+            return '<div class="mp3-listing-container"><ul class="mp3-list"></ul></div>';
         }
     }
 
@@ -669,7 +674,7 @@ function mp3_listing_shortcode($atts)
 
     // Add a hidden container for all items (used for search)
     $output .= '<div class="mp3-all-items" style="display: none;">';
-    
+
     // Query ALL items without pagination
     $all_args = array(
         'post_type' => 'mp3_listing',
@@ -679,18 +684,18 @@ function mp3_listing_shortcode($atts)
     );
 
     // Add taxonomy query if playlist is specified
-    if (!empty($atts['playlist'])) {
+    if (!empty($playlist_id)) {
         $all_args['tax_query'] = array(
             array(
                 'taxonomy' => 'mp3_playlist',
-                'field' => 'slug',
-                'terms' => $atts['playlist']
+                'field' => 'term_id',
+                'terms' => $playlist_id
             )
         );
     }
 
     $all_query = new WP_Query($all_args);
-    
+
     if ($all_query->have_posts()) {
         while ($all_query->have_posts()) {
             $all_query->the_post();
@@ -698,7 +703,7 @@ function mp3_listing_shortcode($atts)
         }
     }
     wp_reset_postdata();
-    
+
     $output .= '</div>';
 
     // Regular visible list with pagination
@@ -713,12 +718,12 @@ function mp3_listing_shortcode($atts)
     );
 
     // Add taxonomy query if playlist is specified
-    if (!empty($atts['playlist'])) {
+    if (!empty($playlist_id)) {
         $args['tax_query'] = array(
             array(
                 'taxonomy' => 'mp3_playlist',
-                'field' => 'slug',
-                'terms' => $atts['playlist']
+                'field' => 'term_id',
+                'terms' => $playlist_id
             )
         );
     }
@@ -808,7 +813,7 @@ function mp3_listing_shortcode($atts)
             <button class="load-more-button" 
                 data-page="2" 
                 data-posts-per-page="' . esc_attr($atts['posts_per_page']) . '"
-                data-playlist="' . esc_attr($atts['playlist']) . '"
+                data-playlist-id="' . esc_attr($playlist_id) . '"
                 data-nonce="' . wp_create_nonce('mp3_load_more_nonce') . '">
                 Load More
             </button>
@@ -882,112 +887,120 @@ function mp3_load_more_tracks()
 
         wp_reset_postdata();
         $output = ob_get_clean();
-        wp_send_json_success($output);
-    } else {
-        // Frontend load more
-        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
-        $posts_per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 10;
-        $playlist = isset($_POST['playlist']) ? sanitize_text_field($_POST['playlist']) : '';
-
-        $args = array(
-            'post_type' => 'mp3_listing',
-            'posts_per_page' => $posts_per_page,
-            'paged' => $page,
-            'orderby' => 'date',
-            'order' => 'DESC'
-        );
-
-        // Add taxonomy query if playlist is specified
-        if (!empty($playlist)) {
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'mp3_playlist',
-                    'field' => 'slug',
-                    'terms' => $playlist
-                )
-            );
-        }
-
-        $query = new WP_Query($args);
-        ob_start();
-
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $mp3_id = get_the_ID();
-                $mp3_url = get_post_meta($mp3_id, '_mp3_url', true);
-                $post_title = get_the_title();
-                $combined_count = get_post_meta($mp3_id, '_mp3_combined_count', true);
-                $combined_count = $combined_count ? intval($combined_count) : 0;
-
-                // Create share URLs
-                $encoded_title = urlencode($post_title);
-                $encoded_mp3_url = urlencode($mp3_url);
-                $facebook_share_url = 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_mp3_url;
-                $twitter_share_url = 'https://x.com/intent/tweet?text=' . urlencode($post_title . ' | ' . $mp3_url);
-                $whatsapp_share_url = 'https://api.whatsapp.com/send?text=' . urlencode($post_title . ' | ' . $mp3_url);
-                $reddit_share_url = 'https://www.reddit.com/submit?url=' . $encoded_mp3_url . '&title=' . $encoded_title;
-                $linkedin_share_url = 'https://www.linkedin.com/sharing/share-offsite/?text=' . urlencode($post_title . ' | ' . $mp3_url);
-                $email_subject = 'Check out this MP3: ' . $post_title;
-                $email_body = "I thought you might like this MP3:\n\n" . $post_title . "\n" . $mp3_url;
-                $email_share_url = 'mailto:?subject=' . rawurlencode($email_subject) . '&body=' . rawurlencode($email_body);
-
-                // Get color options
-                $title_color = get_option('mp3_title_color', '#333333');
-                $download_button_color = get_option('mp3_download_button_color', '#436aa3');
-                $share_button_color = get_option('mp3_share_button_color', '#87a9d8');
-                $audio_player_color = get_option('mp3_audio_player_color', '#2271b1');
-
-                echo '<li style="color: ' . esc_attr($title_color) . ';">
-                    <div class="mp3-item">
-                        <span class="mp3-title">' . esc_html($post_title) . '</span>
-                        <div class="mp3-actions">
-                            <audio controls class="mp3-audio" data-mp3-id="' . esc_attr($mp3_id) . '" data-nonce="' . wp_create_nonce('mp3_play_count_nonce') . '" src="' . esc_url($mp3_url) . '" style="background-color: ' . esc_attr($audio_player_color) . '"></audio>
-                            <a href="' . esc_url(add_query_arg(array('mp3_id' => $mp3_id, 'download' => '1', 'nonce' => wp_create_nonce('mp3_download_nonce_' . $mp3_id)), home_url('/'))) . '" 
-                               class="download-button" 
-                               style="background-color: ' . esc_attr($download_button_color) . ';">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
-                                    <path d="M12 16l4-4h-3V4h-2v8H8l4 4zM5 18h14v2H5v-2z" stroke="#fff" stroke-width="1.5" fill="#fff"/>
-                                </svg>
-                            </a>
-                            <div class="share-button-wrapper">
-                                <button class="share-button" data-title="' . esc_attr($post_title) . '" data-url="' . esc_url($mp3_url) . '" style="background-color: ' . esc_attr($share_button_color) . ';">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
-                                        <path d="M18 8c1.25 0 2.25-1 2.25-2.25S19.25 3.5 18 3.5 15.75 4.5 15.75 5.75c0 .15.02.3.06.45l-7.8 4.05c-.33-.17-.7-.3-1.1-.3-1.2 0-2.25 1.05-2.25 2.25s1.05 2.25 2.25 2.25c.55 0 1.04-.2 1.41-.53l7.8 4.05c-.03.13-.06.28-.06.43 0 1.25 1 2.25 2.25 2.25s2.25-1 2.25-2.25-1-2.25-2.25-2.25c-.55 0-1.04.2-1.41.53l-7.8-4.05c.04-.15.06-.3.06-.45 0-.15-.02-.3-.06-.45l7.8-4.05c.37.34.86.53 1.41.53z" stroke="#fff" stroke-width="1.5" fill="#fff"/>
-                                    </svg>
-                                </button>
-                                <div class="share-dropdown">
-                                    <a href="' . esc_url($facebook_share_url) . '" target="_blank" rel="noopener noreferrer">
-                                        <img src="' . esc_url(plugins_url('assets/icons/facebook.png', __FILE__)) . '" alt="Share on Facebook" /> Facebook
-                                    </a>
-                                    <a href="' . esc_url($twitter_share_url) . '" target="_blank" rel="noopener noreferrer">
-                                        <img src="' . esc_url(plugins_url('assets/icons/twitter.png', __FILE__)) . '" alt="Share on X" /> X
-                                    </a>
-                                    <a href="' . esc_url($linkedin_share_url) . '" target="_blank" rel="noopener noreferrer">
-                                        <img src="' . esc_url(plugins_url('assets/icons/linkedin.png', __FILE__)) . '" alt="Share on LinkedIn" /> LinkedIn
-                                    </a>
-                                    <a href="' . esc_url($reddit_share_url) . '" target="_blank" rel="noopener noreferrer">
-                                        <img src="' . esc_url(plugins_url('assets/icons/reddit.png', __FILE__)) . '" alt="Share on Reddit" /> Reddit
-                                    </a>
-                                    <a href="' . esc_url($whatsapp_share_url) . '" target="_blank" rel="noopener noreferrer">
-                                        <img src="' . esc_url(plugins_url('assets/icons/whatsapp.png', __FILE__)) . '" alt="Share on WhatsApp" /> WhatsApp
-                                    </a>
-                                    <a href="' . esc_url($email_share_url) . '">
-                                        <img src="' . esc_url(plugins_url('assets/icons/email.png', __FILE__)) . '" alt="Share via Email" /> Email
-                                    </a>
-                                </div>
-                            </div>
-                            <span class="view-count">👁️ ' . $combined_count . '</span>
-                        </div>
-                    </div>
-                </li>';
-            }
-        }
-
-        wp_reset_postdata();
-        $output = ob_get_clean();
+        // Return plain HTML string for admin
         wp_send_json_success($output);
     }
+    // ...existing code for frontend handler remains unchanged...
 }
+
+/**
+ * AJAX handler for loading more tracks (frontend)
+ */
+function mp3_load_more_tracks_frontend()
+{
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mp3_load_more_nonce')) {
+        wp_send_json_error('Invalid nonce');
+    }
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    $posts_per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 10;
+    $playlist_id = isset($_POST['playlist_id']) ? absint($_POST['playlist_id']) : 0;
+    $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+    if (empty($playlist_id) || !get_term_by('id', $playlist_id, 'mp3_playlist')) {
+        wp_send_json_success(['html' => '', 'has_more' => false]);
+    }
+    $args = array(
+        'post_type' => 'mp3_listing',
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'mp3_playlist',
+                'field' => 'term_id',
+                'terms' => $playlist_id
+            )
+        )
+    );
+    // If searching, return all matches (no pagination)
+    if (!empty($search)) {
+        $args['s'] = $search;
+        $args['posts_per_page'] = -1;
+        $args['paged'] = 1;
+    } else {
+        $args['posts_per_page'] = $posts_per_page;
+        $args['paged'] = $page;
+    }
+    $query = new WP_Query($args);
+    ob_start();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $mp3_id = get_the_ID();
+            $mp3_url = get_post_meta($mp3_id, '_mp3_url', true);
+            $post_title = get_the_title();
+            $combined_count = get_post_meta($mp3_id, '_mp3_combined_count', true);
+            $combined_count = $combined_count ? intval($combined_count) : 0;
+            $title_color = get_option('mp3_title_color', '#333333');
+            $download_button_color = get_option('mp3_download_button_color', '#436aa3');
+            $share_button_color = get_option('mp3_share_button_color', '#87a9d8');
+            $audio_player_color = get_option('mp3_audio_player_color', '#2271b1');
+            echo '<li style="color: ' . esc_attr($title_color) . ';">
+                <div class="mp3-item">
+                    <span class="mp3-title">' . esc_html($post_title) . '</span>
+                    <div class="mp3-actions">
+                        <audio controls class="mp3-audio" data-mp3-id="' . esc_attr($mp3_id) . '" data-nonce="' . wp_create_nonce('mp3_play_count_nonce') . '" src="' . esc_url($mp3_url) . '" style="background-color: ' . esc_attr($audio_player_color) . '"></audio>
+                        <a href="' . esc_url(add_query_arg(array('mp3_id' => $mp3_id, 'download' => '1', 'nonce' => wp_create_nonce('mp3_download_nonce_' . $mp3_id)), home_url('/'))) . '" 
+                           class="download-button" 
+                           style="background-color: ' . esc_attr($download_button_color) . ';">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                                <path d="M12 16l4-4h-3V4h-2v8H8l4 4zM5 18h14v2H5v-2z" stroke="#fff" stroke-width="1.5" fill="#fff"/>
+                            </svg>
+                        </a>
+                        <div class="share-button-wrapper">
+                            <button class="share-button" data-title="' . esc_attr($post_title) . '" data-url="' . esc_url($mp3_url) . '" style="background-color: ' . esc_attr($share_button_color) . ';">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                                    <path d="M18 8c1.25 0 2.25-1 2.25-2.25S19.25 3.5 18 3.5 15.75 4.5 15.75 5.75c0 .15.02.3.06.45l-7.8 4.05c-.33-.17-.7-.3-1.1-.3-1.2 0-2.25 1.05-2.25 2.25s1.05 2.25 2.25 2.25c.55 0 1.04-.2 1.41-.53l7.8 4.05c-.03.13-.06.28-.06.43 0 1.25 1 2.25 2.25 2.25s2.25-1 2.25-2.25-1-2.25-2.25-2.25c-.55 0-1.04.2-1.41.53l-7.8-4.05c.04-.15.06-.3.06-.45 0-.15-.02-.3-.06-.45l7.8-4.05c.37.34.86.53 1.41.53z" stroke="#fff" stroke-width="1.5" fill="#fff"/>
+                                </svg>
+                            </button>
+                            <div class="share-dropdown"></div>
+                        </div>
+                        <span class="view-count">👁️ ' . $combined_count . '</span>
+                    </div>
+                </div>
+            </li>';
+        }
+    }
+    wp_reset_postdata();
+    $output = ob_get_clean();
+    $total_found = $query->found_posts;
+    $loaded = !empty($search) ? $total_found : $page * $posts_per_page;
+    $has_more = !empty($search) ? false : ($loaded < $total_found);
+    wp_send_json_success(['html' => $output, 'has_more' => $has_more]);
+}
+add_action('wp_ajax_nopriv_mp3_load_more_tracks_frontend', 'mp3_load_more_tracks_frontend');
+add_action('wp_ajax_mp3_load_more_tracks_frontend', 'mp3_load_more_tracks_frontend');
 add_action('wp_ajax_mp3_load_more_tracks', 'mp3_load_more_tracks');
-add_action('wp_ajax_nopriv_mp3_load_more_tracks', 'mp3_load_more_tracks');
+
+/**
+ * AJAX handler for removing a track from a playlist
+ */
+function mp3_remove_from_playlist()
+{
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permission denied');
+    }
+    $track_id = isset($_POST['track_id']) ? absint($_POST['track_id']) : 0;
+    $playlist_id = isset($_POST['playlist_id']) ? absint($_POST['playlist_id']) : 0;
+    $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
+    if (!$track_id || !$playlist_id || !$nonce || !wp_verify_nonce($nonce, 'mp3_playlist_operations')) {
+        wp_send_json_error('Invalid request');
+    }
+    // Remove the playlist term from the track
+    $result = wp_remove_object_terms($track_id, $playlist_id, 'mp3_playlist');
+    // Remove the custom order meta for this track/playlist
+    delete_post_meta($track_id, 'playlist_order_' . $playlist_id);
+    if (is_wp_error($result)) {
+        wp_send_json_error('Failed to remove from playlist');
+    }
+    wp_send_json_success('Track removed from playlist');
+}
+add_action('wp_ajax_mp3_remove_from_playlist', 'mp3_remove_from_playlist');

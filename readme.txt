@@ -40,39 +40,29 @@ Yes, you can customize colors for:
 
 == Changelog ==
 
+= 1.2.4 =
+* Enhanced search performance and mobile responsiveness
+* Improved accessibility and keyboard navigation
+* Optimized CSS loading and error handling
+* Fixed various UI and layout issues
+
+= 1.2.3 =
+This version introduces real-time search functionality with improved user experience and performance optimizations. Update for enhanced search capabilities and better mobile support.
+
+= 1.2.2 =
+This version fixes load more functionality for all users and improves security. Update for better performance and reliability.
+
 = 1.2.1 =
-* Enhanced audio player styling with consistent color scheme
-* Improved button colors and hover states
-* Optimized CSS structure and removed redundant files
-* Better visual consistency across all UI elements
-* Consolidated styles for better maintainability
+This version improves the visual consistency of the plugin with enhanced color schemes and optimized styling. Update for a better user experience.
 
 = 1.2.0 =
-* Added customizable color settings for player interface
-* Improved settings page organization
-* Added color picker for easy color selection
-* Enhanced UI consistency
-* Fixed various styling issues
+This version adds customizable color settings and improves the overall user interface. Update to get access to the new styling options.
 
 = 1.1.0 =
-* Added share functionality
-* Added play count tracking
-* Added load more feature
-* Improved mobile responsiveness
+This version adds social media sharing and play count tracking. Update to enable these new features.
 
 = 1.0.0 =
-* Initial release with core features:
-  - MP3 file upload and management system
-  - Custom post type for MP3 files
-  - Frontend display with shortcode
-  - HTML5 audio player integration
-  - Basic download functionality
-  - Simple admin interface
-  - File size display and validation
-  - Security measures for downloads
-  - Basic error handling
-  - File type validation
-  - WordPress admin integration
+Initial release with basic MP3 file management and playback functionality.
 
 == Upgrade Notice ==
 

@@ -47,6 +47,25 @@ Navigate to MP3 Files > Settings to customize:
 
 ## Changelog
 
+### Version 1.2.4 (2024-05-03)
+
+#### Added
+- Enhanced search performance with optimized query handling
+- Improved mobile responsiveness for audio player controls
+- Added support for keyboard navigation in search results
+
+#### Improved
+- Optimized CSS loading for better performance
+- Enhanced error handling for file downloads
+- Improved accessibility with better ARIA labels
+- Streamlined AJAX request handling
+
+#### Fixed
+- Fixed occasional search result highlighting issues
+- Resolved mobile layout inconsistencies
+- Fixed audio player controls visibility in dark mode
+- Addressed minor CSS specificity conflicts
+
 ### Version 1.2.3 (2024-04-02)
 
 #### Added

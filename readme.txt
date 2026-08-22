@@ -3,7 +3,7 @@ Contributors: arnelbg
 Tags: mp3, audio, player, download, social share
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,10 @@ TRDS MP3 Listing is a powerful WordPress plugin that allows you to upload, manag
 Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post.
 
 == Changelog ==
+
+= 1.2.6 =
+* Excluded MP3 listing records from front-end site search results
+* Prevents search result cards linking to non-viewable audio records (404s)
 
 = 1.2.5 =
 * Improved search functionality efficiency
@@ -74,6 +78,9 @@ Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post
 * Basic audio player
 
 == Upgrade Notice ==
+
+= 1.2.6 =
+This update keeps internal MP3 records out of front-end search results, preventing broken links on the search page.
 
 = 1.2.5 =
 This update improves search functionality and fixes playlist filtering issues.

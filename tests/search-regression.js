@@ -1,8 +1,12 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const path = require("node:path");
 const vm = require("node:vm");
 
-const source = fs.readFileSync("assets/js/mp3-frontend.js", "utf8");
+const source = fs.readFileSync(
+  path.join(__dirname, "..", "assets", "js", "mp3-frontend.js"),
+  "utf8",
+);
 const match = source.match(/function normalizeString\(str\) \{[\s\S]*?\n  \}/);
 const requestHelpers = source.match(
   /function beginRequest\(container\) \{[\s\S]*?\n  \}\n\n  function isCurrentRequest\(container, requestId\) \{[\s\S]*?\n  \}/,

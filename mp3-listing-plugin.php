@@ -4,7 +4,7 @@
  * Plugin Name: TRDS MP3 Listing
  * Plugin URI: https://github.com/wikiwyrhead/TRDS-MP3-Listing/
  * Description: A simple plugin to upload, manage, and list MP3 files with download and social media share buttons. Includes a backend for uploading MP3s and a shortcode to display the audio listing on the frontend. Allows customization of button and title colors via a settings submenu under MP3 Files.
- * Version: 1.2.6
+ * Version: 1.2.7
  * Author: Arnel Go
  * Author URI: https://arnelbg.com/
  * License: GPLv2 or later
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Plugin version
-define('TRDS_MP3_PLUGIN_VERSION', '1.2.6');
+define('TRDS_MP3_PLUGIN_VERSION', '1.2.7');
 
 function force_download_mp3()
 {
@@ -346,12 +346,8 @@ add_action('save_post', 'save_mp3_file');
  */
 function mp3_frontend_scripts()
 {
-    // Original frontend styles and scripts
-    wp_enqueue_script('mp3-upload', plugin_dir_url(__FILE__) . 'assets/js/mp3-upload.js', array('jquery'), '1.0', true);
+    // Frontend styles and scripts
     wp_enqueue_style('mp3-listing-style', plugin_dir_url(__FILE__) . 'assets/css/mp3-style.css', array(), '1.0');
-    wp_localize_script('mp3-upload', 'mp3_ajax_params', array('ajax_url' => admin_url('admin-ajax.php')));
-
-    // Additional frontend JavaScript for load more functionality
     wp_enqueue_script(
         'mp3-frontend-scripts',
         plugins_url('assets/js/mp3-frontend.js', __FILE__),
@@ -661,8 +657,13 @@ function mp3_listing_shortcode($atts)
         }
     }
 
+    $frontend_nonce = wp_create_nonce('mp3_load_more_nonce');
+
     // Output container with search bar
-    $output = '<div class="mp3-listing-container">
+    $output = '<div class="mp3-listing-container"
+        data-posts-per-page="' . esc_attr($atts['posts_per_page']) . '"
+        data-playlist-id="' . esc_attr($playlist_id) . '"
+        data-nonce="' . esc_attr($frontend_nonce) . '">
         <div class="mp3-search-container">
             <input type="text" class="mp3-search-input" placeholder="SEARCH ' . esc_attr($playlist_title) . '" />
             <div class="mp3-search-icon">
@@ -815,7 +816,7 @@ function mp3_listing_shortcode($atts)
                 data-page="2" 
                 data-posts-per-page="' . esc_attr($atts['posts_per_page']) . '"
                 data-playlist-id="' . esc_attr($playlist_id) . '"
-                data-nonce="' . wp_create_nonce('mp3_load_more_nonce') . '">
+                data-nonce="' . esc_attr($frontend_nonce) . '">
                 Load More
             </button>
         </div>';
@@ -901,10 +902,10 @@ function mp3_load_more_tracks_frontend()
 {
     check_ajax_referer('mp3_load_more_nonce', 'nonce');
     
-    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
-    $posts_per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 10;
-    $playlist_id = isset($_POST['playlist_id']) ? absint($_POST['playlist_id']) : 0;
-    $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+    $page = isset($_POST['page']) ? absint(wp_unslash($_POST['page'])) : 1;
+    $posts_per_page = isset($_POST['posts_per_page']) ? intval(wp_unslash($_POST['posts_per_page'])) : 10;
+    $playlist_id = isset($_POST['playlist_id']) ? absint(wp_unslash($_POST['playlist_id'])) : 0;
+    $search = isset($_POST['search']) ? sanitize_text_field(wp_unslash($_POST['search'])) : '';
     
     $args = array(
         'post_type' => 'mp3_listing',
@@ -1015,7 +1016,7 @@ function mp3_load_more_tracks_frontend()
     $output = ob_get_clean();
     $total_found = $query->found_posts;
     $loaded = $page * $posts_per_page;
-    $has_more = $loaded < $total_found;
+    $has_more = $posts_per_page > 0 && $loaded < $total_found;
     
     wp_send_json_success(['html' => $output, 'has_more' => $has_more]);
 }

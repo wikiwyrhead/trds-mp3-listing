@@ -2,9 +2,11 @@
 
 A WordPress plugin for managing and displaying MP3 files with social sharing and download capabilities.
 
-## Version 1.2.5
+## Version 1.2.7
 
 ### Latest Updates
+- Fixed numbered series searches and search reset pagination
+- Scoped search and Load More behavior to each playlist listing
 - Improved search functionality efficiency
 - Fixed playlist filtering during search
 - Enhanced social media sharing dropdown behavior
@@ -30,6 +32,15 @@ A WordPress plugin for managing and displaying MP3 files with social sharing and
 Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post.
 
 ### Changelog
+
+#### 1.2.7
+- Fixed numbered lesson searches such as `(01)`
+- Restored the first page when clearing a search
+- Fixed search on small playlists and pages with multiple listings
+- Prevented duplicate Load More requests
+
+#### 1.2.6
+- Excluded internal MP3 records from front-end site search results
 
 #### 1.2.5
 - Improved search functionality efficiency

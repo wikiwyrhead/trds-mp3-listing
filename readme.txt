@@ -3,7 +3,7 @@ Contributors: arnelbg
 Tags: mp3, audio, player, download, social share
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,10 @@ TRDS MP3 Listing is a powerful WordPress plugin that allows you to upload, manag
 Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post.
 
 == Changelog ==
+
+= 1.2.8 =
+* Expanded MP3 keyword search across all playlists and pagination pages
+* Kept normal browsing and cleared-search results scoped to the page's playlist
 
 = 1.2.7 =
 * Fixed playlist search for numbered lesson titles such as `(01)`
@@ -84,6 +88,9 @@ Use the shortcode `[mp3_listing]` to display the MP3 listing on any page or post
 * Basic audio player
 
 == Upgrade Notice ==
+
+= 1.2.8 =
+Keyword search now finds matching MP3s anywhere in the library, including other playlists and pagination pages.
 
 = 1.2.7 =
 This update improves playlist search precision and restores pagination correctly after clearing a search.

@@ -194,7 +194,7 @@ jQuery(document).ready(function ($) {
           action: "mp3_load_more_tracks_frontend",
           page: 1,
           posts_per_page: -1,
-          playlist_id: container.data("playlist-id") || "",
+          playlist_id: "",
           nonce: container.data("nonce"),
           search: searchTerm,
         },

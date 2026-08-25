@@ -57,6 +57,11 @@ assert.equal(isCurrentRequest(container, secondRequest), true);
 
 assert.match(source, /loadMoreItems\(container, 1, true, requestId\)/);
 assert.match(source, /input\.closest\("\.mp3-listing-container"\)/);
+assert.match(
+  source,
+  /posts_per_page: -1,\s+playlist_id: "",/,
+  "search requests must cover every MP3 playlist",
+);
 assert.match(source, /if \(!isCurrentRequest\(container, requestId\)\)/);
 assert.doesNotMatch(source, /mp3_ajax_params/);
 
